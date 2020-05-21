@@ -13,10 +13,14 @@ int main(const int argc, const char* argv[]) {
 
     std::vector<std::string> all_args(argv, argv + argc);
 
-    std::vector<alphabet> expression = parse(all_args[1]); 
+    expression_t exp = parse(all_args[1]); 
 
-    for(std::size_t i=0; i<expression.size(); ++i)
-        std::cout << expression[i] << '\n';
-    
+    if ( std::find(exp.begin(), exp.end(), invalid) != exp.end())  {
+        std::cout << "Error: invalid input" << std::endl; 
+        return 1;
+    }
+
+    formula_t form = make_formula(exp);
+
     return 0;
 }
