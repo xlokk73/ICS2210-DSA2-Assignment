@@ -5,10 +5,12 @@
 #include <vector>
 
 
+enum variable { w, x, y, z };
+
 /* Decleration of the formula */
 typedef struct literal { 
     bool is_neg;
-    enum var { w, x, y, z };
+    variable var;
 } literal_t;
 
 typedef std::vector<literal_t> clause_t;
