@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <typeinfo>
 #include "sat.h" 
 
 int main(const int argc, const char* argv[]) {
@@ -20,9 +21,9 @@ int main(const int argc, const char* argv[]) {
 
     formula_t formula = make_formula(exp);
 
-    for(std::size_t i = 0; i < formula.size(); ++i) {
-        for(std::size_t j = 0; j < formula[i].size(); ++j) {
-            std::cout << "hello ";
+    for(int i = 0; i < formula.size(); ++i) {
+        for(int j = 0; j < formula[i].size(); ++j) {
+            std::cout << formula[i][j].var << " ";
         }
         std::cout << std::endl;
     }
