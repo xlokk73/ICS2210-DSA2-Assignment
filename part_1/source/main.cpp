@@ -14,23 +14,36 @@ int main(const int argc, const char* argv[]) {
 
     expression_t exp = parse(input); 
 
+    /**/ std::cout << "Checking if input is alphabetically correct" << std::endl;
     if ( std::find(exp.begin(), exp.end(), invalid) != exp.end())  {
         std::cout << "Error: invalid input" << std::endl; 
         return 1;
     }
 
+    /**/ std::cout << "Checking if syntax is valid" << std::endl;
     formula_t formula = make_formula(exp);
-    if (formula[0][0].var == inv) { 
-        std::cout << "Error: invalid formula" << std::endl;
-        return 1;
+
+    for(int i = 0; i < formula.size(); ++i) {
+        for(int j = 0; j < formula[i].size(); ++j) {
+            if ( formula[i][j].var == inv ) {
+                std::cout << "Error: invalid syntax" << std::endl; 
+                return 1;
+            }
+        }
     }
 
+    /**/ std::cout << "Printing formula" << std::endl;
     for(int i = 0; i < formula.size(); ++i) {
         for(int j = 0; j < formula[i].size(); ++j) {
             show_literal(formula[i][j]);
         }
         std::cout << std::endl;
     }
+
+    /**/ std::cout << "Running algorithm" << std::endl;
+    if ( DPLL(formula) )    { std::cout << "SAT" << std::endl; }
+    else                    { std::cout << "UNSAT" << std::endl; } 
+
 
     return 0;
 }

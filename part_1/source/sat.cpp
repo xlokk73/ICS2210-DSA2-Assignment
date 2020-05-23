@@ -81,7 +81,7 @@ formula_t make_formula(expression_t exp) {
             break;
 
         case close_par:
-            if(in_comma) { 
+            if(in_comma || in_neg) { 
                 current_literal.var = inv;
                 current_clause = {current_literal};
                 formula = {current_clause};
@@ -200,12 +200,12 @@ formula_t make_formula(expression_t exp) {
     return formula;
 }
 
-bool DPLL(formula_t form) {
+bool DPLL(formula_t formula) {
     std::cout << "Starting DPLL" << std::endl;
     
-    if ( is_consistent_set_of_literals(form) )   { return true; }
+    // if ( is_consistent_set_of_literals(formula) )   { return true; }
 
-    if ( contains_empty_clause(form) )           { return false; } 
+    if ( contains_empty_clause(formula) )           { return false; } 
 
     return true;
 }
@@ -214,6 +214,12 @@ bool is_consistent_set_of_literals(formula_t form) {
     return true;
 }
 
-bool contains_empty_clause(formula_t form) {
-    return true;
+bool contains_empty_clause(formula_t formula) {
+    for(int i = 0; i < formula.size(); ++i) {
+        if ( formula[i].size() == 0 ) {
+            return true;
+        }
+    }
+    
+    return false;
 }
