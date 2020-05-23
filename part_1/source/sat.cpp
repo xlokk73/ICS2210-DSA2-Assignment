@@ -42,6 +42,28 @@ expression_t parse(std::string str_exp) {
     return exp;
 }
 
+void show_literal(literal_t literal) { 
+    if ( literal.is_neg ) { std::cout << "!"; }
+
+    switch(literal.var) {
+    case w:
+        std::cout << "w ";
+        break;
+    case x:
+        std::cout << "x ";
+        break;
+    case y:
+        std::cout << "y ";
+        break;
+    case z:
+        std::cout << "z ";
+        break;
+    default:
+        std::cout << "Invalid";
+        break;
+    }
+}    
+
 formula_t make_formula(expression_t exp) {
     literal_t current_literal;
     clause_t current_clause = {};
@@ -59,7 +81,12 @@ formula_t make_formula(expression_t exp) {
             break;
 
         case close_par:
-            if(in_comma) { return {}; }
+            if(in_comma) { 
+                current_literal.var = inv;
+                current_clause = {current_literal};
+                formula = {current_clause};
+                return formula; 
+            }
             in_par = false;
             formula.push_back(current_clause);
             current_clause = {};
@@ -71,9 +98,17 @@ formula_t make_formula(expression_t exp) {
             break; 
 
         case comma:
-            if(in_comma)    { return {}; }
-            if(in_neg)      { return {}; }
-            else            { in_comma = true; break; }
+            if(in_comma || in_neg) { 
+                current_literal.var = inv;
+                current_clause = {current_literal};
+                formula = {current_clause};
+                return formula; 
+            }
+
+            else { 
+                in_comma = true; 
+                break; 
+            }
 
         case var_w:
             in_comma = false;
@@ -156,7 +191,10 @@ formula_t make_formula(expression_t exp) {
             break;
 
         default:
-            return {};
+            current_literal.var = inv;
+            current_clause = {current_literal};
+            formula = {current_clause};
+            return formula; 
         }
     }
     return formula;

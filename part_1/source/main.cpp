@@ -20,10 +20,14 @@ int main(const int argc, const char* argv[]) {
     }
 
     formula_t formula = make_formula(exp);
+    if (formula[0][0].var == inv) { 
+        std::cout << "Error: invalid formula" << std::endl;
+        return 1;
+    }
 
     for(int i = 0; i < formula.size(); ++i) {
         for(int j = 0; j < formula[i].size(); ++j) {
-            std::cout << formula[i][j].var << " ";
+            show_literal(formula[i][j]);
         }
         std::cout << std::endl;
     }
