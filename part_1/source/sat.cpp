@@ -76,24 +76,11 @@ formula_t make_formula(expression_t exp) {
         switch(exp[i]) {
 
         case open_par:
-            if(formula.size() > 0 || !in_comma) { 
-                current_literal.var = inv;
-                current_clause = {current_literal};
-                formula = {current_clause};
-                return formula; 
-            }
-            
             in_comma = false;
             in_par = true;
             break;
 
         case close_par:
-            if(in_comma || in_neg) { 
-                current_literal.var = inv;
-                current_clause = {current_literal};
-                formula = {current_clause};
-                return formula; 
-            }
             in_par = false;
             formula.push_back(current_clause);
             current_clause = {};
@@ -238,7 +225,6 @@ bool contains_contradiction(formula_t formula, variable v) {
     return false;
 }
     
-
 bool contains_trivially_unsat(formula_t formula) {
     if ( contains_contradiction(formula, w)
         || contains_contradiction(formula, x)
