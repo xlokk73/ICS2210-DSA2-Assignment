@@ -34,6 +34,8 @@ formula_t make_formula(expression_t exp);
 /* The DPLL algorithm */
 bool DPLL(formula_t exp);
 
+bool contains_trivially_unsat(formula_t formula); 
+
 bool is_consistent_set_of_literals(formula_t form);
 
 bool contains_empty_clause(formula_t form);

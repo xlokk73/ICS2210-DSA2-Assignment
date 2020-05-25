@@ -76,6 +76,13 @@ formula_t make_formula(expression_t exp) {
         switch(exp[i]) {
 
         case open_par:
+            if(formula.size() > 0 || !in_comma) { 
+                current_literal.var = inv;
+                current_clause = {current_literal};
+                formula = {current_clause};
+                return formula; 
+            }
+            
             in_comma = false;
             in_par = true;
             break;
@@ -202,12 +209,45 @@ formula_t make_formula(expression_t exp) {
 
 bool DPLL(formula_t formula) {
     std::cout << "Starting DPLL" << std::endl;
-    
-    // if ( is_consistent_set_of_literals(formula) )   { return true; }
+
+    if ( contains_trivially_unsat(formula) )        { return false; }
 
     if ( contains_empty_clause(formula) )           { return false; } 
 
     return true;
+}
+
+bool contains_contradiction(formula_t formula, variable v) {
+
+    int formula_length = formula.size();
+
+    // Check for {v}
+    for(int i = 0; i < formula_length; ++i) {
+        if ( formula[i].size() != 1 ) {}
+        else if ( formula[i][0].var == v && !formula[i][0].is_neg ) {
+            // Check for {!v}
+            for(int j = 0; j < formula_length; ++j) {
+                if ( formula[j].size() != 1 ) {}
+                else if ( formula[j][0].var == v && formula[j][0].is_neg ) {
+                    return true;
+                }
+            }
+        }
+    }
+    
+    return false;
+}
+    
+
+bool contains_trivially_unsat(formula_t formula) {
+    if ( contains_contradiction(formula, w)
+        || contains_contradiction(formula, x)
+        || contains_contradiction(formula, y)
+        || contains_contradiction(formula, z) ) {
+            return true;
+    }
+
+    return false;
 }
 
 bool is_consistent_set_of_literals(formula_t form) {
@@ -220,6 +260,6 @@ bool contains_empty_clause(formula_t formula) {
             return true;
         }
     }
-    
+
     return false;
 }
