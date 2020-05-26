@@ -194,40 +194,62 @@ formula_t make_formula(expression_t exp) {
     return formula;
 }
 
+void show(formula_t formula) {
+    for(int i = 0; i < formula.size(); ++i) {
+        for(int j = 0; j < formula[i].size(); ++j) {
+            show_literal(formula[i][j]);
+        }
+        std::cout << std::endl;
+    }
+}
+
 bool DPLL(formula_t formula) {
     std::cout << "Starting DPLL" << std::endl;
+    show(formula);
+
 
     if ( contains_trivially_unsat(formula) )        { return false; }
+
+    if ( formula.size() == 0 )                      { return true; }
 
     if ( contains_empty_clause(formula) )           { return false; } 
 
     loop:
     for(int i = 0; i < formula.size(); ++i) {
-        if ( formula[i].size() == 1 && !formula[i][0].is_neg) {
+        if ( formula[i].size() == 1) {
             formula = apply_1_lit_rule(formula[i][0], formula);
             goto loop;
         }
     }
 
-    return true;
+    return DPLL(formula);
 }
 
 std::vector<clause_t> apply_1_lit_rule(literal_t u, std::vector<clause_t> formula) {
     variable v = u.var;
+    bool has_u = false;
+    bool is_nv = u.is_neg;
+
     std::vector<clause_t> new_formula; 
     std::vector<literal_t> new_clause;
+
 
     // For each clause
     for(int i = 0; i < formula.size(); ++i) {
         new_clause = {};
 
-        // Add all elements literals except !v
+        // Create a new formula without v clauses and without !v in any clause
         for(int j = 0; j < formula[i].size(); ++j) {
-            if (formula[i][j].var == v && formula[i][j].is_neg ) {}
+            if (formula[i][j].var == v && is_nv != formula[i][j].is_neg ) {}
+            else if (formula[i].size()==1 && formula[i][0].var == v && is_nv == formula[i][0].is_neg) { has_u = true; } 
             else { new_clause.push_back(formula[i][j]); }
         }
 
-        new_formula.push_back(new_clause);
+        if ( !has_u ) {
+            new_formula.push_back(new_clause);
+        }
+
+        has_u = false;
     }
 
     return new_formula;
