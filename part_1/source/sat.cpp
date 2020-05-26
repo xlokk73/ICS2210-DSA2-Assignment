@@ -207,7 +207,6 @@ bool DPLL(formula_t formula) {
     std::cout << "Starting DPLL" << std::endl;
     show(formula);
 
-
     if ( contains_trivially_unsat(formula) )        { return false; }
 
     if ( formula.size() == 0 )                      { return true; }
@@ -222,8 +221,82 @@ bool DPLL(formula_t formula) {
         }
     }
 
-    return DPLL(formula);
+    formula = apply_pure_lit_rule(formula);
+
+        return DPLL(formula);
 }
+
+formula_t apply_pure_lit_rule(formula_t formula) {
+    formula_t new_formula;
+
+    // Find pure literals
+    std::vector<literal_t> pure_literals;
+    literal_t literal;
+    
+    std::vector<variable> var_list = { w, x, y, z };
+
+    for(int i = 0; i < var_list.size(); ++i) {
+        std::cout << "VARIABLE: " << var_list[i] << " ";
+        
+        if ( is_pure(var_list[i], false, formula) ) { 
+            std::cout << "HERE 1" << std::endl;
+            literal.var = var_list[i];
+            literal.is_neg = false;
+            pure_literals.push_back(literal);
+        }
+        else if ( is_pure(var_list[i], true, formula) ) {
+            std::cout << "HERE 2" << std::endl;
+            literal.var = var_list[i];
+            literal.is_neg = true;
+            pure_literals.push_back(literal);
+        }
+    }
+          
+    std::cout << "\nPRINTING PURE LITERALS" << std::endl;
+    for(int i = 0; i < pure_literals.size(); ++i) {
+        show_literal(pure_literals[i]);
+    }
+    std::cout << std::endl;
+
+    // Remove any clause with pure literals
+
+    for(int i = 0; i < formula.size(); ++i) {
+        for(int j = 0; j < pure_literals.size(); ++j) {
+            if ( contains(pure_literals[j], formula[i]) ) {}
+            else { new_formula.push_back(formula[i]); }
+        }
+    }
+
+    return new_formula;
+}
+
+bool contains(literal_t literal, clause_t clause) {
+
+    for(int i = 0; i < clause.size(); ++i) {
+        if(literal == clause[i]) { return true; }
+    }
+
+    return false;
+
+}
+
+bool is_pure(variable v, bool nval, formula_t formula) {
+    bool exists = false;
+    std::cout << "HERE 4" << std::endl;
+    std::cout << "FORMULA SIZE: " << formula.size() << std::endl;
+    
+    for(int i = 0; i < formula.size(); ++i) {
+        std::cout << "HERE 5" << std::endl;
+        for(int j = 0; j < formula[i].size(); ++j) {
+            std::cout << "HERE 3" << std::endl;
+            if ( formula[i][j].var == v && formula[i][j].is_neg == nval ) { exists = true; }
+            else if ( formula[i][j].var == v && formula[i][j].is_neg != nval ) { return false; }
+        }
+    }
+
+    return exists;
+}
+
 
 std::vector<clause_t> apply_1_lit_rule(literal_t u, std::vector<clause_t> formula) {
     variable v = u.var;
