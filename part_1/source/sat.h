@@ -46,4 +46,7 @@ bool is_consistent_set_of_literals(formula_t form);
 
 bool contains_empty_clause(formula_t form);
 
+literal_t choose_literal(formula_t formula); 
+
+
 #endif

@@ -223,7 +223,30 @@ bool DPLL(formula_t formula) {
 
     formula = apply_pure_lit_rule(formula);
 
-        return DPLL(formula);
+
+    // DPLL
+    literal_t l = choose_literal(formula);
+    literal_t nl;
+    nl.var = l.var;
+    nl.is_neg = !l.is_neg;
+
+    formula_t formula1 = formula;
+    formula_t formula2 = formula;
+
+    formula1.push_back({l});
+    formula2.push_back({nl});
+
+    return DPLL(formula1) || DPLL(formula2);
+}
+
+literal_t choose_literal(formula_t formula) {
+    for(int i = 0; i < formula.size(); ++i) {
+        for(int j = 0; j < formula[i].size(); ++j) {
+            return formula[i][j];
+        }
+    }
+
+    return {};
 }
 
 bool contains(literal_t literal, clause_t clause) {
