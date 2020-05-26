@@ -34,9 +34,11 @@ formula_t make_formula(expression_t exp);
 /* The DPLL algorithm */
 bool DPLL(formula_t exp);
 
-bool is_pure(variable v, bool nval, formula_t formula);
+formula_t apply_pure_lit_rule(formula_t formula);
 
 std::vector<clause_t> apply_1_lit_rule(literal_t u, std::vector<clause_t> formula); 
+
+bool is_pure(variable v, bool nval, formula_t formula);
 
 bool contains_trivially_unsat(formula_t formula); 
 

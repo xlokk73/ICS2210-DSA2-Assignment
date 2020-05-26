@@ -226,6 +226,33 @@ bool DPLL(formula_t formula) {
         return DPLL(formula);
 }
 
+bool contains(literal_t literal, clause_t clause) {
+
+    for(int i = 0; i < clause.size(); ++i) {
+        if(literal.var == clause[i].var && literal.is_neg == clause[i].is_neg) { return true; }
+    }
+
+    return false;
+
+}
+
+bool is_pure(variable v, bool nval, formula_t formula) {
+    bool exists = false;
+    std::cout << "HERE 4" << std::endl;
+    std::cout << "FORMULA SIZE: " << formula.size() << std::endl;
+    
+    for(int i = 0; i < formula.size(); ++i) {
+        std::cout << "HERE 5" << std::endl;
+        for(int j = 0; j < formula[i].size(); ++j) {
+            std::cout << "HERE 3" << std::endl;
+            if ( formula[i][j].var == v && formula[i][j].is_neg == nval ) { exists = true; }
+            else if ( formula[i][j].var == v && formula[i][j].is_neg != nval ) { return false; }
+        }
+    }
+
+    return exists;
+}
+
 formula_t apply_pure_lit_rule(formula_t formula) {
     formula_t new_formula;
 
@@ -270,32 +297,7 @@ formula_t apply_pure_lit_rule(formula_t formula) {
     return new_formula;
 }
 
-bool contains(literal_t literal, clause_t clause) {
 
-    for(int i = 0; i < clause.size(); ++i) {
-        if(literal == clause[i]) { return true; }
-    }
-
-    return false;
-
-}
-
-bool is_pure(variable v, bool nval, formula_t formula) {
-    bool exists = false;
-    std::cout << "HERE 4" << std::endl;
-    std::cout << "FORMULA SIZE: " << formula.size() << std::endl;
-    
-    for(int i = 0; i < formula.size(); ++i) {
-        std::cout << "HERE 5" << std::endl;
-        for(int j = 0; j < formula[i].size(); ++j) {
-            std::cout << "HERE 3" << std::endl;
-            if ( formula[i][j].var == v && formula[i][j].is_neg == nval ) { exists = true; }
-            else if ( formula[i][j].var == v && formula[i][j].is_neg != nval ) { return false; }
-        }
-    }
-
-    return exists;
-}
 
 
 std::vector<clause_t> apply_1_lit_rule(literal_t u, std::vector<clause_t> formula) {
