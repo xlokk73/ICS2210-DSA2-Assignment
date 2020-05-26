@@ -201,7 +201,36 @@ bool DPLL(formula_t formula) {
 
     if ( contains_empty_clause(formula) )           { return false; } 
 
+    loop:
+    for(int i = 0; i < formula.size(); ++i) {
+        if ( formula[i].size() == 1 && !formula[i][0].is_neg) {
+            formula = apply_1_lit_rule(formula[i][0], formula);
+            goto loop;
+        }
+    }
+
     return true;
+}
+
+std::vector<clause_t> apply_1_lit_rule(literal_t u, std::vector<clause_t> formula) {
+    variable v = u.var;
+    std::vector<clause_t> new_formula; 
+    std::vector<literal_t> new_clause;
+
+    // For each clause
+    for(int i = 0; i < formula.size(); ++i) {
+        new_clause = {};
+
+        // Add all elements literals except !v
+        for(int j = 0; j < formula[i].size(); ++j) {
+            if (formula[i][j].var == v && formula[i][j].is_neg ) {}
+            else { new_clause.push_back(formula[i][j]); }
+        }
+
+        new_formula.push_back(new_clause);
+    }
+
+    return new_formula;
 }
 
 bool contains_contradiction(formula_t formula, variable v) {
