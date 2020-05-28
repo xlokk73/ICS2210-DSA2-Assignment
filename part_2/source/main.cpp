@@ -2,6 +2,7 @@
 #include <string>
 #include <vector>
 #include <fstream>
+#include "huffman.h"
 
 int main(const int argc, const char* argv[]) {
     std::cout << "Hello, World!" << std::endl;
@@ -14,13 +15,21 @@ int main(const int argc, const char* argv[]) {
     std::string filename(argv[1]);
 
     std::ifstream stream(filename);
+    std::string content ( (std::istreambuf_iterator<char>(stream) ),
+                          (std::istreambuf_iterator<char>()       ) );
+    content.pop_back();
+    
+    for (char const &c: content) {
+		if ( (c>47 && c<58) || (c>64 && c<91) || (c>96 && c<123) ) {}
 
-    char c;
-    while(stream.get(c)) {
-        std::cout << "char: " << c << std::endl;
-    }
+        else { std::cout << "Error: invalid characters in file" << std::endl; return 1; }
+	}
 
     stream.close();
+
+    huffman(content);
+
+    show_table();
 
     return 0;
 }

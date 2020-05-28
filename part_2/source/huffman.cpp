@@ -1,0 +1,114 @@
+#include <iostream>
+#include "huffman.h"
+
+std::map<char, int> data;
+std::vector<Node*> trees;
+
+
+
+Node* make_node(char value, char weight, Node* left, Node* right) {
+    Node* node = new Node;
+    node->value = value;
+    node->weight = weight;
+    node->left = left;
+    node->right = right;
+
+    if ( left == nullptr && right == nullptr )  { node->is_leaf = true; }
+    else                                        { node->is_leaf = false; }
+
+    return node;
+}
+
+void destroy(Node* tree) {
+  if ( tree != nullptr ) {
+      destroy(tree->left);
+      destroy(tree->right);
+      free(tree);
+  }
+}
+
+void huffman(std::string content) {
+    std::cout << "Compressing: " << content << std::endl;
+    
+    for (char const &c: content) {
+	    if (data.find(c) != data.end()) {
+            data[c]++;
+        }
+
+        else {
+            data[c] = 1;
+        }
+    }
+
+    // Make trees from data
+    std::cout << "COLLECTED DATA:" << std::endl;
+    for(std::map<char, int>::iterator i = data.begin(); i != data.end(); ++i) {
+        Node* node = make_node(i->first, i->second, nullptr, nullptr);
+        trees.push_back(node);
+    }
+    
+    int least1 = trees[0]->weight;
+    int index1 = 0;
+    int least2 = trees[0]->weight;
+    int index2 = 0;
+
+    while(trees.size() != 1) {
+        // Find least1 and least2
+        for(int i = 0; i < trees.size(); ++i) {
+            if(trees[i]->weight < least1) {
+                least1 = trees[i]->weight;
+                index1 = i;
+            }
+
+            if(trees[i]->weight > least1 && trees[i]->weight < least2) {
+                least2 = trees[i]->weight;
+                index2 = i;
+            }
+        }
+        
+        
+        // Create node with new values and add it to tree list
+        std::cout << "Making new node with weight: " << least1 + least2 << std::endl; 
+        Node* new_node = make_node('a', least1 + least2, trees[index2], trees[index1]);
+        trees.push_back(new_node);
+        
+        // Remove old nodes from tree list
+        std::cout << "removing nodes with value: " << trees[index1]->value << " " << trees[index2]->value << std::endl;
+        trees.erase(trees.begin() + index1 - 1);
+        trees.erase(trees.begin() + index2 - 2);
+
+        std::cout << "Current vector: " << std::endl;
+        for(int i = 0; i < trees.size(); ++i) {
+            std::cout << trees[i]->value << " ";
+        }
+    }
+}
+
+void printLeafNodes(Node* root) { 
+
+    // if node is null, return 
+    if (root == nullptr) {
+        return; 
+    }
+      
+    // if node is leaf node, print its data     
+    if (root->left==nullptr && root->right==nullptr) 
+    { 
+        std::cout << root->value << " " << root->weight << " ";  
+        return; 
+    } 
+  
+    // if left child exists, check for leaf  
+    // recursively 
+    if (root->left) 
+       printLeafNodes(root->left); 
+          
+    // if right child exists, check for leaf  
+    // recursively 
+    if (root->right) 
+       printLeafNodes(root->right); 
+}  
+
+void show_table() {
+    // printLeafNodes(trees[0]);
+}
