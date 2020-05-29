@@ -43,7 +43,7 @@ int* find_least(std::vector<Node*> vec, int* least) {
     least[1] = least[3] = max_index;
 
     for(int i = 0; i < vec.size(); ++i) {
-        if(least[0] > vec[i]->weight && vec[i]->value != '_') {
+        if(least[0] > vec[i]->weight) {
             least[0] = vec[i]->weight;
             least[1] = i;
         }
@@ -51,13 +51,32 @@ int* find_least(std::vector<Node*> vec, int* least) {
 
     // find least 2;
     for (int i = 0; i < vec.size(); ++i) {
-        if(least[2] > vec[i]->weight && i != least[1] && vec[i]->value != '_') {
+        if(least[2] > vec[i]->weight && i != least[1]) {
             least[2] = vec[i]->weight;
             least[3] = i;
         }
     }
 
     return least;
+}
+
+void print_tree(Node* node) {
+    if (node==nullptr) {
+        return;
+    }
+
+    if (node->left == nullptr && node->right == nullptr) {
+        std::cout << "Value: " << node->value << " Weight: " << node->weight << std::endl;
+        return;
+    }
+
+    if ( node->left != nullptr) {
+        print_tree(node->left);
+    }
+
+    if ( node->right != nullptr) {
+        print_tree(node->right);
+    }
 }
 
 
@@ -99,7 +118,7 @@ void huffman(std::string content) {
         std::cout << "Making new node with weight: " << first + second << std::endl; 
         Node* new_node = make_node('_', first + second, trees[index2], trees[index1]);
         trees.push_back(new_node);
-        
+
         // Remove old nodes from tree list
         std::cout << "removing nodes with value: " << trees[index1]->value << " " << trees[index2]->value << std::endl;
         trees.erase(trees.begin() + index1);
@@ -110,6 +129,9 @@ void huffman(std::string content) {
             std::cout << trees[i]->value << " ";
         }
     }
+
+    std::cout << "Printing tree: " << std::endl;
+    print_tree(trees[0]);
 }
 
 void printLeafNodes(Node* root) { 
