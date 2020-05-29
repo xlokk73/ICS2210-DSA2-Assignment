@@ -1,0 +1,49 @@
+\documentclass[a4paper, 12pt]{article}
+\usepackage{graphicx}
+
+\setlength\parindent{24pt}
+
+\begin{document}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=1\textwidth]{Logo}
+\end{figure}
+
+\title{Assignment Report}
+\author{Manwel Bugeja}
+\date{\today}
+\maketitle
+
+\tableofcontents
+\newpage
+
+\section{Introduction}
+\subsection{Note on the code}
+This assignment is implemented in c++. Readability was prioritized over efficiency since the code needs to be
+easily understood by others. 
+
+\section{Part 1}
+\subsection{How the problem was tackled}
+\subsubsection{Structures}
+First off, the needed structures where created: 'variable' in an enumerated type containing the possible variables.
+An 'invalid' variable was also created whose use is for error catching purposes. Following that, a structure 'literal\_t'.
+This structure is composed of a variable and boolean to show whether the variable is negated or not.
+
+Then a clause was defined as a vector of literals. Similarly, a formula was defined as a vector of clauses.
+
+Apart from those, 'expression\_t' was also defined as an array of alphabet. Alphabet being an enumeration
+containing the possible alphabet characters received as input.
+
+These structures are defined in 'sat.h'.
+
+\subsubsection{Parsing}
+In the parsing, the string is first converted to an 'expression\_t'. Then it is translated to a formula. Since all variables are 
+only a character long, the commas can be ignored completly when the expression is inputted. For example "(wx), (!w)" will still be parsed successfully. 
+This will not reslut in an error as the input can still be successfully parse. 
+Still, inserting "(," will still cause the program to exit since after an open parethesis, 
+the parser expects a literal (variable or negation followed by a variable).
+
+\section{Part 2}
+
+\end{document}
