@@ -13,9 +13,6 @@ Node* make_node(char value, char weight, Node* left, Node* right) {
     node->left = left;
     node->right = right;
 
-    if ( left == nullptr && right == nullptr )  { node->is_leaf = true; }
-    else                                        { node->is_leaf = false; }
-
     return node;
 }
 
@@ -27,7 +24,7 @@ void destroy(Node* tree) {
   }
 }
 
-int* find_least(std::vector<Node*> vec, int* least) {
+void find_least(std::vector<Node*> vec, int* least) {
     // find max
     int max = -1;
     int max_index = -1;
@@ -56,8 +53,6 @@ int* find_least(std::vector<Node*> vec, int* least) {
             least[3] = i;
         }
     }
-
-    return least;
 }
 
 void print_tree(Node* node) {
@@ -102,33 +97,32 @@ void huffman(std::string content) {
     }
     std::cout << std::endl;
 
+    //Huffman 
     while(trees.size() != 1) {
-        int array[4];
-        int* least = find_least(trees, array);
-        int first = least[0];
-        int index1 = least[1];
-        int second = least[2];
-        int index2 = least[3];
+        std::cout << "hello" << std::endl;
+        //find least 1 and least 2
+        int least[4];
+        find_least(trees, least);
 
-    
-        std::cout << "LEAST1: " << trees[index1]->weight << " LEAST2: " << trees[index2]->weight << std::endl;
+        // merge trees
+        Node* new_node = make_node('_', least[0] + least[2], trees[least[1]], trees[least[3]]);
         
-
-        // Create node with new values and add it to tree list
-        std::cout << "Making new node with weight: " << first + second << std::endl; 
-        Node* new_node = make_node('_', first + second, trees[index2], trees[index1]);
-        trees.push_back(new_node);
-
-        // Remove old nodes from tree list
-        std::cout << "removing nodes with value: " << trees[index1]->value << " " << trees[index2]->value << std::endl;
-        trees.erase(trees.begin() + index1);
-        trees.erase(trees.begin() + index2 - 1);
-
-        std::cout << "Current vector: " << std::endl;
-        for(int i = 0; i < trees.size(); ++i) {
-            std::cout << trees[i]->value << " ";
+        //  remove old nodes
+        trees.erase(trees.begin() + least[1]);
+        if ( least[3] < least[1] ) {
+            trees.erase(trees.begin() + least[3]);
         }
+
+        else {
+            trees.erase(trees.begin() + least[3] - 1);
+        }
+
+        // add new node
+        trees.push_back(new_node);
     }
+
+    std::cout << "SIZE OF VECTOR: " << trees.size() << std::endl;
+
 
     std::cout << "Printing tree: " << std::endl;
     print_tree(trees[0]);

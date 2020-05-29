@@ -7,7 +7,6 @@
 
 struct Node {
     char value;
-    bool is_leaf;
     int weight;
     Node* left;
     Node* right;
