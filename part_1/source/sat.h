@@ -48,5 +48,7 @@ bool contains_empty_clause(formula_t form);
 
 literal_t choose_literal(formula_t formula); 
 
+formula_t remove_trivially_sat(formula_t formula); 
+
 
 #endif

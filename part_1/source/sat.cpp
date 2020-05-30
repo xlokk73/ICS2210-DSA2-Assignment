@@ -207,6 +207,8 @@ bool DPLL(formula_t formula) {
     std::cout << "Starting DPLL" << std::endl;
     show(formula);
 
+    formula = remove_trivially_sat(formula);
+
     if ( contains_trivially_unsat(formula) )        { return false; }
 
     if ( formula.size() == 0 )                      { return true; }
@@ -239,6 +241,53 @@ bool DPLL(formula_t formula) {
     return DPLL(formula1) || DPLL(formula2);
 }
 
+formula_t remove_trivially_sat(formula_t formula) {
+    struct var {
+        bool val;
+        int index;
+    };
+    
+    struct var init;
+    init.val = false;
+    init.index = -1;
+
+    struct var vars[4] = {init, init, init, init};
+    struct var nvars[4] = {init, init, init, init};
+    
+    for(int i = 0; i < formula.size(); ++i) {
+        if (formula[i].size() == 1) {
+            switch(formula[i][0].var) {
+            case w:
+                if(formula[i][0].is_neg)    { nvars[0].val = true; nvars[0].index = i; }
+                else                        { vars[0].val  = true; vars[0].index = i; }
+                break;
+            case x:
+                if(formula[i][0].is_neg)    { nvars[1].val = true; nvars[0].index = i; }
+                else                        { vars[1].val  = true; vars[0].index = i; } 
+                break;
+            case y:
+                if(formula[i][0].is_neg)    { nvars[2].val = true; nvars[0].index = i; }
+                else                        { vars[2].val  = true; vars[0].index = i; }
+                break;
+            default:
+                if(formula[i][0].is_neg)    { nvars[3].val = true; nvars[0].index = i; }
+                else                        { vars[3].val  = true; vars[0].index = i; }
+                break;
+            }
+        }
+    }
+
+    for(int i = 0; i < 4; ++i) {
+        if ( vars[i].val && nvars[i].val ) {
+            formula.erase(formula.begin() + vars[i].index);
+            if ( nvars[i].index < vars[i].index ) { formula.erase(formula.begin() + nvars[i].index); }
+            else                                { formula.erase(formula.begin() + nvars[i].index - 1); }
+        }
+    }
+
+    return formula;
+}
+
 literal_t choose_literal(formula_t formula) {
     for(int i = 0; i < formula.size(); ++i) {
         for(int j = 0; j < formula[i].size(); ++j) {
@@ -261,13 +310,9 @@ bool contains(literal_t literal, clause_t clause) {
 
 bool is_pure(variable v, bool nval, formula_t formula) {
     bool exists = false;
-    std::cout << "HERE 4" << std::endl;
-    std::cout << "FORMULA SIZE: " << formula.size() << std::endl;
     
     for(int i = 0; i < formula.size(); ++i) {
-        std::cout << "HERE 5" << std::endl;
         for(int j = 0; j < formula[i].size(); ++j) {
-            std::cout << "HERE 3" << std::endl;
             if ( formula[i][j].var == v && formula[i][j].is_neg == nval ) { exists = true; }
             else if ( formula[i][j].var == v && formula[i][j].is_neg != nval ) { return false; }
         }
@@ -289,13 +334,11 @@ formula_t apply_pure_lit_rule(formula_t formula) {
         std::cout << "VARIABLE: " << var_list[i] << " ";
         
         if ( is_pure(var_list[i], false, formula) ) { 
-            std::cout << "HERE 1" << std::endl;
             literal.var = var_list[i];
             literal.is_neg = false;
             pure_literals.push_back(literal);
         }
         else if ( is_pure(var_list[i], true, formula) ) {
-            std::cout << "HERE 2" << std::endl;
             literal.var = var_list[i];
             literal.is_neg = true;
             pure_literals.push_back(literal);
