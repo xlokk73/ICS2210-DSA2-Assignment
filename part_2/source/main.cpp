@@ -27,9 +27,11 @@ int main(const int argc, const char* argv[]) {
 
     stream.close();
 
+    std::cout << "Building tree: " << std::endl;
     huffman(content);
 
-    show_table();
+    std::cout << "Printing tree: " << std::endl;
+    show_table(trees[0], "");
 
     return 0;
 }

@@ -74,6 +74,33 @@ void print_tree(Node* node) {
     }
 }
 
+void show_table(Node* root, std::string history) { 
+
+    // if node is null, return 
+    if (root == nullptr) {
+        return; 
+    }
+      
+    // if node is leaf node, print its data     
+    if (root->left==nullptr && root->right==nullptr) { 
+        std::cout << history << " " << root->value << std::endl;  
+        return; 
+    } 
+  
+    // if left child exists, check for leaf  
+    // recursively 
+    if (root->left) {
+        history.push_back('0'); 
+        show_table(root->left, history); 
+    }
+          
+    // if right child exists, check for leaf  
+    // recursively 
+    if (root->right) {
+        history.push_back('1');
+        show_table(root->right, history); 
+    }
+}  
 
 void huffman(std::string content) {
     std::cout << "Compressing: " << content << std::endl;
@@ -99,15 +126,17 @@ void huffman(std::string content) {
 
     //Huffman 
     while(trees.size() != 1) {
-        std::cout << "hello" << std::endl;
-        //find least 1 and least 2
+        // least[0] is the least weight
+        // least[1] is it's index
+        // least[2] is the second least
+        // least[3] is it's index
         int least[4];
         find_least(trees, least);
 
         // merge trees
         Node* new_node = make_node('_', least[0] + least[2], trees[least[1]], trees[least[3]]);
         
-        //  remove old nodes
+        // remove old nodes
         trees.erase(trees.begin() + least[1]);
         if ( least[3] < least[1] ) {
             trees.erase(trees.begin() + least[3]);
@@ -121,38 +150,5 @@ void huffman(std::string content) {
         trees.push_back(new_node);
     }
 
-    std::cout << "SIZE OF VECTOR: " << trees.size() << std::endl;
-
-
-    std::cout << "Printing tree: " << std::endl;
-    print_tree(trees[0]);
 }
 
-void printLeafNodes(Node* root) { 
-
-    // if node is null, return 
-    if (root == nullptr) {
-        return; 
-    }
-      
-    // if node is leaf node, print its data     
-    if (root->left==nullptr && root->right==nullptr) 
-    { 
-        std::cout << root->value << " " << root->weight << " ";  
-        return; 
-    } 
-  
-    // if left child exists, check for leaf  
-    // recursively 
-    if (root->left) 
-       printLeafNodes(root->left); 
-          
-    // if right child exists, check for leaf  
-    // recursively 
-    if (root->right) 
-       printLeafNodes(root->right); 
-}  
-
-void show_table() {
-    // printLeafNodes(trees[0]);
-}

@@ -21,6 +21,6 @@ void destroy(Node* tree);
 
 void huffman(std::string content);
 
-void show_table();
+void show_table(Node* root, std::string history);
 
 #endif
