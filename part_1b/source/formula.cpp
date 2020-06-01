@@ -75,6 +75,7 @@ void show_literal(literal_e literal) {
     }
 }    
 
+
 formula_t make_formula(expression_t exp) {
     literal_e current_literal;
     clause_t current_clause = {};
@@ -87,108 +88,109 @@ formula_t make_formula(expression_t exp) {
         switch(exp[i]) {
 
         case open_par:
-            in_comma = false;
+            if (in_par)                             { return {{inv}}; }
+            if (in_neg)                             { return {{inv}}; }
+
             in_par = true;
+            in_neg = false;
+            in_comma = false;
+
             break;
 
         case close_par:
+            if (!in_par)    { return {{inv}}; }
+            if (in_neg)     { return {{inv}}; }
+            if (in_comma)   { return {{inv}}; }
+
             in_par = false;
+            in_neg = false;
+            in_comma = false;
+
             formula.push_back(current_clause);
-            current_clause = {};
+
             break;
 
         case neg:
-            in_comma = false;
-            in_neg = true; 
+            if (in_neg)                             { return {{inv}}; }
+
+            in_neg = true;
+
             break; 
 
         case comma:
-            if(in_comma || in_neg) { 
-                current_literal = inv;
-                current_clause = {current_literal};
-                formula = {current_clause};
-                return formula; 
-            }
-
-            else { 
-                in_comma = true; 
-                break; 
-            }
-
-        case var_w:
-            in_comma = false;
-
-            if(in_neg)  { current_literal = nw; }
-            else        { current_literal = w; }
+            if (in_comma)                               { return {{inv}}; } 
+            if (in_neg)                                 { return {{inv}}; }
 
             in_neg = false;
+            in_comma = false;
+            
+            break; 
 
-            if(in_par) { 
-                current_clause.push_back(current_literal); 
-            } 
-
-            else { 
-                current_clause = { current_literal };
-                formula.push_back(current_clause);
-                current_clause = {};
+        case var_w:
+            if (in_par) {
+                if (in_neg) { current_clause.push_back(nw); }
+                else        { current_clause.push_back(w); }
             }
+
+            else {
+                if (in_neg) { formula.push_back({nw}); }
+                else        { formula.push_back({w}); }
+            }
+
+            in_neg = false;
+            in_comma = false;
+
             break;
 
         case var_x:
-            in_comma = false;
+            if (in_par) {
+                if (in_neg) { current_clause.push_back(nx); }
+                else        { current_clause.push_back(x); }
+            }
 
-            if(in_neg)  { current_literal = x; }
-            else        { current_literal = nx; }
+            else {
+                if (in_neg) { formula.push_back({nx}); }
+                else        { formula.push_back({x}); }
+            }
 
             in_neg = false;
+            in_comma = false;
 
-            if(in_par) { 
-                current_clause.push_back(current_literal); 
-            } 
 
-            else { 
-                current_clause = { current_literal };
-                formula.push_back(current_clause);
-                current_clause = {};
-            }
             break;
 
         case var_y:
-            in_comma = false;
+            if (in_par) {
+                if (in_neg) { current_clause.push_back(ny); }
+                else        { current_clause.push_back(y); }
+            }
 
-            if(in_neg)  { current_literal = y; }
-            else        { current_literal = ny; }
+            else {
+                if (in_neg) { formula.push_back({ny}); }
+                else        { formula.push_back({y}); }
+            }
 
             in_neg = false;
+            in_comma = false;
 
-            if(in_par) { 
-                current_clause.push_back(current_literal); 
-            } 
 
-            else { 
-                current_clause = { current_literal };
-                formula.push_back(current_clause);
-                current_clause = {};
-            }
             break;
 
         case var_z:
-            in_comma = false;
+            if (in_par) {
+                if (in_neg) { current_clause.push_back(nz); }
+                else        { current_clause.push_back(z); }
+            }
 
-            if(in_neg)  { current_literal = z; }
-            else        { current_literal = nz; }
+            else {
+                if (in_neg) { formula.push_back({nz}); }
+                else        { formula.push_back({z}); }
+            }
 
             in_neg = false;
+            in_comma = false;
 
-            if(in_par) { 
-                current_clause.push_back(current_literal); 
-            } 
 
-            else { 
-                current_clause = { current_literal };
-                formula.push_back(current_clause);
-                current_clause = {};
-            }
             break;
 
         default:

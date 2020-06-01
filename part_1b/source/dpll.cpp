@@ -10,10 +10,11 @@ bool DPLL(formula_t formula) {
     std::cout << "CURRENT FORMULA:\n";
     show_formula(formula);
 
+    if ( formula.size() == 0 )                      { return true; }
+
     /*
     if ( contains_trivially_unsat(formula) )        { return false; }
 
-    if ( formula.size() == 0 )                      { return true; }
 
     if ( contains_empty_clause(formula) )           { return false; } 
 
@@ -42,7 +43,8 @@ bool DPLL(formula_t formula) {
 
     return DPLL(formula1) || DPLL(formula2);
     */
-    return true;
+    std::cout << "HERE\n";
+    return false;
 }
 
 formula_t remove_trivially_sat(formula_t formula) {
