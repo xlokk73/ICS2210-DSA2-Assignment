@@ -27,11 +27,13 @@ bool DPLL(formula_t formula) {
     }
     show_formula(formula);
     
-    /*
 
+    std::cout << "Applying pure lit rule\n";
     formula = apply_pure_lit_rule(formula);
+    show_formula(formula);
 
 
+    /*
     // DPLL
     literal_t l = choose_literal(formula);
     literal_t nl;
@@ -196,6 +198,70 @@ bool contains_empty_clause(formula_t formula) {
     return false;
 }
 
+formula_t remove_clauses_containing(formula_t formula, literal_e literal) {
+    bool contains = false;
+    formula_t new_formula = {};
+
+    for(int i = 0; i < formula.size(); ++i) {
+        for(int j = 0; j < formula[i].size(); ++j) {
+            if (formula[i][j] == literal) { contains = true; }
+        }
+
+        if (contains) {}
+        else { new_formula.push_back(formula[i]); }
+
+        contains = false;
+    }
+
+    return new_formula;
+}
+            
+
+formula_t apply_pure_lit_rule(formula_t formula) {
+     
+    literal_e lits[8]      = {w,     x,     y,     z,     nw,    nx,    ny,    nz   };
+    bool contains[8] = {false, false, false, false, false, false, false, false};
+    
+    for(int i = 0; i < formula.size(); ++i) {
+        for(int j = 0; j < formula[i].size(); ++j) {
+            switch(formula[i][j]) {
+            case w:
+                contains[0] = true;
+                break;
+            case x:
+                contains[1] = true;
+                break;
+            case y:
+                contains[2] = true;
+                break;
+            case z:
+                contains[3] = true;
+                break;
+            case nw:
+                contains[4] = true;
+                break;
+            case nx:
+                contains[5] = true;
+                break;
+            case ny:
+                contains[6] = true;
+                break;
+            case nz:
+                contains[7] = true;
+                break;
+            default:
+                return {};
+            }
+        }
+    }
+
+    for(int i = 0; i < 4; ++i) {
+        if (contains[i] && !contains[i+4])      { formula = remove_clauses_containing(formula, lits[i]); }
+        else if (!contains[i] && contains[i+4]) { formula = remove_clauses_containing(formula, lits[i+4]); }
+    }
+
+    return formula;
+}
 
 /* 
 literal_t choose_literal(formula_t formula) {

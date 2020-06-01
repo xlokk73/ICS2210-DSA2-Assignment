@@ -61,7 +61,7 @@ void show_literal(literal_e literal) {
         std::cout << "y ";
         break;
     case ny:
-        std::cout << "ny ";
+        std::cout << "!y ";
         break;
     case z:
         std::cout << "z ";
