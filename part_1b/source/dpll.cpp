@@ -6,16 +6,15 @@ bool DPLL(formula_t formula) {
     std::cout << "Starting DPLL" << std::endl;
     show_formula(formula);
 
-    std::cout << "DEBUG\n";
     formula = remove_trivially_sat(formula);
     std::cout << "CURRENT FORMULA:\n";
     show_formula(formula);
 
     if ( formula.size() == 0 )                      { return true; }
 
-    /*
     if ( contains_trivially_unsat(formula) )        { return false; }
 
+    /*
 
     if ( contains_empty_clause(formula) )           { return false; } 
 
@@ -102,6 +101,41 @@ formula_t remove_trivially_sat(formula_t formula) {
 
     return formula;
 }
+
+bool contains_variables_in_same_clause(formula_t formula, literal_e v, literal_e nv) {
+
+    bool contains_v = false;
+    bool contains_nv = false;
+
+    for(int i = 0 ; i < formula.size(); ++i) {
+        for(int j = 0; j < formula[i].size(); ++j) {
+            if (formula[i][j] == v)     { contains_v = true; }
+            if (formula[i][j] == nv)    { contains_nv = true; }
+        }
+
+        if (contains_v && contains_nv) { return true; }
+        else { 
+            contains_v = false;
+            contains_nv = false;
+        }
+    }
+
+    
+    return false;
+}
+    
+bool contains_trivially_unsat(formula_t formula) {
+    if ( contains_variables_in_same_clause(formula, w, nw)
+        || contains_variables_in_same_clause(formula, x, nx)
+        || contains_variables_in_same_clause(formula, y, ny)
+        || contains_variables_in_same_clause(formula, z, nz) ) {
+            return true;
+    }
+
+    return false;
+}
+
+
 
 /* 
 literal_t choose_literal(formula_t formula) {
@@ -210,38 +244,6 @@ std::vector<clause_t> apply_1_lit_rule(literal_t u, std::vector<clause_t> formul
     }
 
     return new_formula;
-}
-
-bool contains_contradiction(formula_t formula, variable v) {
-
-    int formula_length = formula.size();
-
-    // Check for {v}
-    for(int i = 0; i < formula_length; ++i) {
-        if ( formula[i].size() != 1 ) {}
-        else if ( formula[i][0].var == v && !formula[i][0].is_neg ) {
-            // Check for {!v}
-            for(int j = 0; j < formula_length; ++j) {
-                if ( formula[j].size() != 1 ) {}
-                else if ( formula[j][0].var == v && formula[j][0].is_neg ) {
-                    return true;
-                }
-            }
-        }
-    }
-    
-    return false;
-}
-    
-bool contains_trivially_unsat(formula_t formula) {
-    if ( contains_contradiction(formula, w)
-        || contains_contradiction(formula, x)
-        || contains_contradiction(formula, y)
-        || contains_contradiction(formula, z) ) {
-            return true;
-    }
-
-    return false;
 }
 
 bool is_consistent_set_of_literals(formula_t form) {
