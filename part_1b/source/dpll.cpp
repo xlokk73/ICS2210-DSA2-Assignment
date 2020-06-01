@@ -6,25 +6,28 @@ bool DPLL(formula_t formula) {
     std::cout << "Starting DPLL" << std::endl;
     show_formula(formula);
 
+    std::cout << "Removing trivially sat" << std::endl;
     formula = remove_trivially_sat(formula);
-    std::cout << "CURRENT FORMULA:\n";
     show_formula(formula);
 
     if ( formula.size() == 0 )                      { return true; }
 
     if ( contains_trivially_unsat(formula) )        { return false; }
 
-    /*
-
     if ( contains_empty_clause(formula) )           { return false; } 
 
-    loop:
+
+    std::cout << "Applying one lit rule\n";
+    exhaust:
     for(int i = 0; i < formula.size(); ++i) {
-        if ( formula[i].size() == 1) {
+        if (formula[i].size() == 1) {
             formula = apply_1_lit_rule(formula[i][0], formula);
-            goto loop;
+            goto exhaust;
         }
     }
+    show_formula(formula);
+    
+    /*
 
     formula = apply_pure_lit_rule(formula);
 
@@ -88,8 +91,8 @@ formula_t remove_trivially_sat(formula_t formula) {
     }
 
     std::vector<int> to_remove;
-    for(int i = 0; i < 8; ++i) {
-        if(index_var[i] != -1) {
+    for(int i = 0; i < 4; ++i) {
+        if(index_var[i] != -1 && index_var[i + 4] != -1) {
             to_remove.push_back(index_var[i]);
         }
     }
@@ -102,7 +105,7 @@ formula_t remove_trivially_sat(formula_t formula) {
     return formula;
 }
 
-bool contains_variables_in_same_clause(formula_t formula, literal_e v, literal_e nv) {
+bool contains_in_same_clause(formula_t formula, literal_e v, literal_e nv) {
 
     bool contains_v = false;
     bool contains_nv = false;
@@ -119,22 +122,79 @@ bool contains_variables_in_same_clause(formula_t formula, literal_e v, literal_e
             contains_nv = false;
         }
     }
-
     
     return false;
 }
     
 bool contains_trivially_unsat(formula_t formula) {
-    if ( contains_variables_in_same_clause(formula, w, nw)
-        || contains_variables_in_same_clause(formula, x, nx)
-        || contains_variables_in_same_clause(formula, y, ny)
-        || contains_variables_in_same_clause(formula, z, nz) ) {
+    if ( contains_in_same_clause(formula, w, nw)
+        || contains_in_same_clause(formula, x, nx)
+        || contains_in_same_clause(formula, y, ny)
+        || contains_in_same_clause(formula, z, nz) ) {
             return true;
     }
 
     return false;
 }
 
+formula_t apply_1_lit_rule(literal_e u, formula_t formula) {
+    literal_e nu;
+    switch(u) {
+    case w:
+        nu = nw;
+        break;
+    case x:
+        nu = nx;
+        break;
+    case y:
+        nu = ny;
+        break;
+    case z:
+        nu = nz;
+        break;
+    case nw:
+        nu = w;
+        break;
+    case nx:
+        nu = x;
+        break;
+    case ny:
+        nu = y;
+        break;
+    case nz:
+        nu = z;
+        break;
+    default:
+        nu = inv;
+        break;
+    }
+
+    formula_t new_formula = {};
+    clause_t current_clause = {};
+    
+    for(int i = 0; i < formula.size(); ++i) {
+        if (formula[i].size() == 1 && formula[i][0] == u) {}
+        else {
+            for(int j = 0; j < formula[i].size(); ++j) {
+                if (formula[i][j] == nu) {}
+                else { current_clause.push_back(formula[i][j]); }
+            }
+
+            new_formula.push_back(current_clause);
+            current_clause = {};
+        }
+    }
+
+    return new_formula;
+}
+
+bool contains_empty_clause(formula_t formula) {
+    for(int i = 0; i < formula.size(); ++i) {
+        if (formula[i].size() == 0) { return true; }
+    }
+    
+    return false;
+}
 
 
 /* 
@@ -215,36 +275,6 @@ formula_t apply_pure_lit_rule(formula_t formula) {
 
 
 
-
-std::vector<clause_t> apply_1_lit_rule(literal_t u, std::vector<clause_t> formula) {
-    variable v = u.var;
-    bool has_u = false;
-    bool is_nv = u.is_neg;
-
-    std::vector<clause_t> new_formula; 
-    std::vector<literal_t> new_clause;
-
-
-    // For each clause
-    for(int i = 0; i < formula.size(); ++i) {
-        new_clause = {};
-
-        // Create a new formula without v clauses and without !v in any clause
-        for(int j = 0; j < formula[i].size(); ++j) {
-            if (formula[i][j].var == v && is_nv != formula[i][j].is_neg ) {}
-            else if (formula[i].size()==1 && formula[i][0].var == v && is_nv == formula[i][0].is_neg) { has_u = true; } 
-            else { new_clause.push_back(formula[i][j]); }
-        }
-
-        if ( !has_u ) {
-            new_formula.push_back(new_clause);
-        }
-
-        has_u = false;
-    }
-
-    return new_formula;
-}
 
 bool is_consistent_set_of_literals(formula_t form) {
     return true;

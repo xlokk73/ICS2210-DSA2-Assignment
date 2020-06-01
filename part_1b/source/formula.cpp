@@ -107,6 +107,7 @@ formula_t make_formula(expression_t exp) {
             in_comma = false;
 
             formula.push_back(current_clause);
+            current_clause = {};
 
             break;
 
