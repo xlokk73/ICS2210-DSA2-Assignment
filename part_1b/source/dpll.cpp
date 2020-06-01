@@ -6,6 +6,7 @@ bool DPLL(formula_t formula) {
     std::cout << "Starting DPLL" << std::endl;
     show_formula(formula);
 
+    std::cout << "DEBUG\n";
     formula = remove_trivially_sat(formula);
     std::cout << "CURRENT FORMULA:\n";
     show_formula(formula);
@@ -43,15 +44,15 @@ bool DPLL(formula_t formula) {
 
     return DPLL(formula1) || DPLL(formula2);
     */
-    std::cout << "HERE\n";
     return false;
 }
+
+bool greater_than (int i,int j) { return (i>j); }
 
 formula_t remove_trivially_sat(formula_t formula) {
     // index_var[] = { index of w, index of x, ..., index of z }
     // index_nvar[] = { index of !w, index of !x, ..., index of !z }
-    int index_var[4]  = {-1, -1, -1, -1};
-    int index_nvar[4] = {-1, -1, -1, -1};
+    int index_var[8]  = {-1, -1, -1, -1, -1, -1, -1, -1};
 
     // Find clauses with single variables
     for(int i = 0; i < formula.size(); ++i) {
@@ -70,16 +71,16 @@ formula_t remove_trivially_sat(formula_t formula) {
                 index_var[3] = i;
                 break;
             case nw:
-                index_nvar[0] = i;
+                index_var[4] = i;
                 break;
             case nx:
-                index_nvar[1] = i;
+                index_var[5] = i;
                 break;
             case ny:
-                index_nvar[2] = i;
+                index_var[6] = i;
                 break;
             case nz:
-                index_nvar[3] = i;
+                index_var[7] = i;
                 break;
             default:
                 return formula;
@@ -87,17 +88,16 @@ formula_t remove_trivially_sat(formula_t formula) {
         }
     }
 
-    for(int i = 0; i < 4; ++i) {
-        if (index_var[i] != -1 && index_nvar[i] != -1) {
-            formula.erase(formula.begin() + index_var[i]); 
-            
-            if (index_var[i] > index_nvar[i]) {
-                formula.erase(formula.begin() + index_nvar[i]);
-            }
-            else {
-                formula.erase(formula.begin() + index_nvar[i] - 1);
-            }
+    std::vector<int> to_remove;
+    for(int i = 0; i < 8; ++i) {
+        if(index_var[i] != -1) {
+            to_remove.push_back(index_var[i]);
         }
+    }
+
+    std::sort (to_remove.begin(), to_remove.end(), greater_than); 
+    for(int i = 0; i < to_remove.size(); ++i) {
+        formula.erase(formula.begin() + to_remove[i]);
     }
 
     return formula;
