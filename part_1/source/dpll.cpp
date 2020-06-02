@@ -33,12 +33,9 @@ bool DPLL(formula_t formula) {
     show_formula(formula);
 
 
-    /*
     // DPLL
-    literal_t l = choose_literal(formula);
-    literal_t nl;
-    nl.var = l.var;
-    nl.is_neg = !l.is_neg;
+    literal_e l = choose_literal(formula);
+    literal_e nl = negate(l);
 
     formula_t formula1 = formula;
     formula_t formula2 = formula;
@@ -47,8 +44,39 @@ bool DPLL(formula_t formula) {
     formula2.push_back({nl});
 
     return DPLL(formula1) || DPLL(formula2);
-    */
-    return false;
+}
+
+literal_e choose_literal(formula_t formula) {
+    for(int i = 0; i < formula.size(); ++i) {
+        for(int j = 0; j < formula[i].size(); ++j) {
+            return formula[i][j];
+        }
+    }
+
+    return {};
+}
+
+literal_e negate(literal_e literal) {
+    switch(literal) {
+    case w:
+        return nw;
+    case x:
+        return nx;
+    case y:
+        return ny;
+    case z:
+        return nz;
+    case nw:
+        return w;
+    case nx:
+        return x;
+    case ny:
+        return y;
+    case nz:
+        return z;
+    case inv:
+        return inv;
+    }
 }
 
 bool greater_than (int i,int j) { return (i>j); }
