@@ -46,7 +46,7 @@ This will not reslut in an error as the input can still be successfully parse.
 Still, inserting "(," will still cause the program to exit since after an open parethesis, 
 the parser expects a literal (variable or negation followed by a variable).
 
-\subsection{The DPLL algorithm}
+\subsubsection{The DPLL algorithm}
 The DPLL algorithm was implemented according to the pseudo code listed in the course notes. In the 'choose\_literal()' part of the algorithm,
 the first literal from the left is chosen.
 
@@ -203,9 +203,18 @@ In the huffman algorithm, the input is iterated and the values are stored in a m
 and the corresponding weight.
 
 Following that, the map is translated to a vector of nodes (which are all leaves at this point in time).
-Then, a while loop is used to attach the least two nodes together. An '\_' is used as a character for non leaf nodes.
-The nodes which were merged are removed from the vector. The new node is then added to the vector. The while loop 
-goes on until the vector consists of one element i.e. the root node.
+
+\subsubsection{Huffman coding}
+The algorithm is implemented as follows:
+
+\begin{itemize}
+\item (The following is repeated while the vector is longer then one element)
+\item The vector is sorted greatest first
+\item The last two elements are merged into a new node with '\_' as value and the sum of their weights
+\item These last two elements are removed from the vector
+\item The new node is added to the vector
+\end{itemize}
+
 
 \subsection{Testing}
 For testing, some outputs where tested manually by hand. Online generators where also used to compare the output. Included are
