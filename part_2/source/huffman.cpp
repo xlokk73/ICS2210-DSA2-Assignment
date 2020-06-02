@@ -4,8 +4,6 @@
 std::map<char, int> data;
 std::vector<Node*> trees;
 
-
-
 Node* make_node(char value, char weight, Node* left, Node* right) {
     Node* node = new Node;
     node->value = value;
@@ -80,6 +78,9 @@ void show_table(Node* root, std::string history) {
     if (root == nullptr) {
         return; 
     }
+    
+    std::string left_history(history);
+    std::string right_history(history);
       
     // if node is leaf node, print its data     
     if (root->left==nullptr && root->right==nullptr) { 
@@ -89,16 +90,16 @@ void show_table(Node* root, std::string history) {
   
     // if left child exists, check for leaf  
     // recursively 
-    if (root->left) {
-        history.push_back('0'); 
-        show_table(root->left, history); 
+    if (root->left != nullptr) {
+        left_history.push_back('1'); 
+        show_table(root->left, left_history); 
     }
           
     // if right child exists, check for leaf  
     // recursively 
-    if (root->right) {
-        history.push_back('1');
-        show_table(root->right, history); 
+    if (root->right != nullptr) {
+        right_history.push_back('0');
+        show_table(root->right, right_history); 
     }
 }  
 
@@ -122,7 +123,6 @@ std::vector<Node*> merge_and_remove(std::vector<Node*> trees) {
     return trees;
 }
 
-
 void huffman(std::string content) {
     std::cout << "Compressing: " << content << std::endl;
     
@@ -144,8 +144,7 @@ void huffman(std::string content) {
         trees.push_back(node);
     }
     std::cout << std::endl;
-    
-    // Sorting according to weight
+
     while(trees.size() > 1) {
         std::sort(trees.begin(), trees.end(), greater_than); 
         trees = merge_and_remove(trees);

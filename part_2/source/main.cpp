@@ -33,5 +33,6 @@ int main(const int argc, const char* argv[]) {
     std::cout << "Printing tree: " << std::endl;
     show_table(trees[0], "");
 
+    destroy(trees[0]);
     return 0;
 }
