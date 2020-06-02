@@ -102,6 +102,27 @@ void show_table(Node* root, std::string history) {
     }
 }  
 
+bool greater_than(Node* node1, Node* node2) {
+    return node1->weight > node2->weight;
+}
+
+std::vector<Node*> merge_and_remove(std::vector<Node*> trees) {
+    int first_index = trees.size() - 1;
+    int second_index = first_index - 1;
+
+    Node* first = trees[first_index];
+    Node* second = trees[second_index];
+    Node* new_node = make_node('_', first->weight + second->weight, first, second);
+
+    trees.erase(trees.begin() + first_index);
+    trees.erase(trees.begin() + second_index);
+
+    trees.push_back(new_node);
+    
+    return trees;
+}
+
+
 void huffman(std::string content) {
     std::cout << "Compressing: " << content << std::endl;
     
@@ -123,32 +144,11 @@ void huffman(std::string content) {
         trees.push_back(node);
     }
     std::cout << std::endl;
-
-    //Huffman 
-    while(trees.size() != 1) {
-        // least[0] is the least weight
-        // least[1] is it's index
-        // least[2] is the second least
-        // least[3] is it's index
-        int least[4];
-        find_least(trees, least);
-
-        // merge trees
-        Node* new_node = make_node('_', least[0] + least[2], trees[least[1]], trees[least[3]]);
-        
-        // remove old nodes
-        trees.erase(trees.begin() + least[1]);
-        if ( least[3] < least[1] ) {
-            trees.erase(trees.begin() + least[3]);
-        }
-
-        else {
-            trees.erase(trees.begin() + least[3] - 1);
-        }
-
-        // add new node
-        trees.push_back(new_node);
+    
+    // Sorting according to weight
+    while(trees.size() > 1) {
+        std::sort(trees.begin(), trees.end(), greater_than); 
+        trees = merge_and_remove(trees);
     }
-
 }
 
