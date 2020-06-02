@@ -1,5 +1,6 @@
 \documentclass[a4paper, 12pt]{article}
 \usepackage{graphicx}
+\usepackage{listings}
 
 \setlength\parindent{24pt}
 
@@ -26,16 +27,15 @@ easily understood by others.
 \section{Part 1}
 \subsection{How the problem was tackled}
 \subsubsection{Structures}
-First off, the needed structures where created: 'variable' in an enumerated type containing the possible variables.
-An 'invalid' variable was also created whose use is for error catching purposes. Following that, a structure 'literal\_t'.
-This structure is composed of a variable and boolean to show whether the variable is negated or not.
+First off, the needed structures where created: 'literal\_e' in an enumerated type containing the possible variables along with their negation.
+An 'inv' literal was also created whose use is for error catching purposes.
 
 Then a clause was defined as a vector of literals. Similarly, a formula was defined as a vector of clauses.
 
 Apart from those, 'expression\_t' was also defined as an array of alphabet. Alphabet being an enumeration
 containing the possible alphabet characters received as input.
 
-These structures are defined in 'sat.h'.
+These structures are defined in 'formula.h'.
 
 \subsubsection{Parsing}
 In the parsing, the string is first converted to an 'expression\_t'. Then it is translated to a formula. Since all variables are 
@@ -49,9 +49,164 @@ The DPLL algorithm was implemented according to the pseudo code listed in the co
 the first literal from the left is chosen.
 
 \subsection{Testing}
-For the testing of the algorithm, some expressions where tried, with the output compared.
+For the testing of the algorithm, some expressions where tried, with the output compared. Included in this document are examples from the notes.
 
+\begin{lstlisting}[frame=single, caption=1-literal rule test]
+$ ./part_1_binary
+Hello, World!
+Enter expression
+(w), (!w, x)
+RECIVED INPUT: (w), (!w, x)
+Checking if input is alphabetically correct
+Checking if syntax is valid
+Printing formula
+w
+!w x
+Running algorithm
+Starting DPLL
+w
+!w x
+Removing trivially sat
+w
+!w x
+Applying one lit rule
+Applying pure lit rule
+SAT
+\end{lstlisting}
+
+\begin{lstlisting}[frame=single, caption=pure literal rule test]
+$ ./part_1_binary
+Hello, World!
+Enter expression
+(w, x), (w, y), (!x, !y)
+RECIVED INPUT: (w, x), (w, y), (!x, !y)
+Checking if input is alphabetically correct
+Checking if syntax is valid
+Printing formula
+w x
+w y
+!x !y
+Running algorithm
+Starting DPLL
+w x
+w y
+!x !y
+Removing trivially sat
+w x
+w y
+!x !y
+Applying one lit rule
+w x
+w y
+!x !y
+Applying pure lit rule
+!x !y
+Starting DPLL
+!x !y
+!x
+Removing trivially sat
+!x !y
+!x
+Applying one lit rule
+!x !y
+Applying pure lit rule
+SAT
+\end{lstlisting}
+
+\begin{lstlisting}[frame=single, caption=DPLL recursion test]
+$ ./part_1_binary
+Hello, World!
+Enter expression
+(x, y, z), (x, !y), (y, !z), (z, !x), (!x, !y, !z)
+RECIVED INPUT: (x, y, z), (x, !y), (y, !z), (z, !x), (!x, !y, !z)
+Checking if input is alphabetically correct
+Checking if syntax is valid
+Printing formula
+x y z
+x !y
+y !z
+z !x
+!x !y !z
+Running algorithm
+Starting DPLL
+x y z
+x !y
+y !z
+z !x
+!x !y !z
+Removing trivially sat
+x y z
+x !y
+y !z
+z !x
+!x !y !z
+Applying one lit rule
+x y z
+x !y
+y !z
+z !x
+!x !y !z
+Applying pure lit rule
+x y z
+x !y
+y !z
+z !x
+!x !y !z
+Starting DPLL
+x y z
+x !y
+y !z
+z !x
+!x !y !z
+x
+Removing trivially sat
+x y z
+x !y
+y !z
+z !x
+!x !y !z
+x
+Applying one lit rule
+x y z
+
+Applying pure lit rule
+
+Starting DPLL
+x y z
+x !y
+y !z
+z !x
+!x !y !z
+!x
+Removing trivially sat
+x y z
+x !y
+y !z
+z !x
+!x !y !z
+!x
+Applying one lit rule
+
+z !x
+!x !y
+Applying pure lit rule
+
+UNSAT
+\end{lstlisting}
 
 \section{Part 2}
+\subsection{How the problem was tackled}
+First off, the input is checked for any invalid characters, printing an error if any are found.
+In the huffman algorithm, the input is iterated and the values are stored in a map. The map contains the character
+and the corresponding weight.
+
+Following that, the map is translated to a vector of nodes (which are all leaves at this point in time).
+Then, a while loop is used to attach the least two nodes together. An '\_' is used as a character for non leaf nodes.
+The nodes which were merged are removed from the vector. The new node is then added to the vector. The while loop 
+goes on until the vector consists of one element i.e. the root node.
+
+\subsection{Testing}
+
+
 
 \end{document}

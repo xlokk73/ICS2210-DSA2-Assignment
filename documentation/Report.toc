@@ -4,4 +4,6 @@
 \contentsline {subsection}{\numberline {2.1}How the problem was tackled}{2}% 
 \contentsline {subsubsection}{\numberline {2.1.1}Structures}{2}% 
 \contentsline {subsubsection}{\numberline {2.1.2}Parsing}{2}% 
-\contentsline {section}{\numberline {3}Part 2}{2}% 
+\contentsline {subsection}{\numberline {2.2}The DPLL algorithm}{2}% 
+\contentsline {subsection}{\numberline {2.3}Testing}{3}% 
+\contentsline {section}{\numberline {3}Part 2}{6}% 
