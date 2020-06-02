@@ -7,3 +7,5 @@
 \contentsline {subsection}{\numberline {2.2}The DPLL algorithm}{2}% 
 \contentsline {subsection}{\numberline {2.3}Testing}{3}% 
 \contentsline {section}{\numberline {3}Part 2}{6}% 
+\contentsline {subsection}{\numberline {3.1}How the problem was tackled}{6}% 
+\contentsline {subsection}{\numberline {3.2}Testing}{6}% 

@@ -4,6 +4,8 @@
 
 \setlength\parindent{24pt}
 
+\lstset{basicstyle=\footnotesize\ttfamily,breaklines=true, frame=single}
+
 \begin{document}
 
 \begin{figure}
@@ -51,7 +53,7 @@ the first literal from the left is chosen.
 \subsection{Testing}
 For the testing of the algorithm, some expressions where tried, with the output compared. Included in this document are examples from the notes.
 
-\begin{lstlisting}[frame=single, caption=1-literal rule test]
+\begin{lstlisting}[caption=1-literal rule test]
 $ ./part_1_binary
 Hello, World!
 Enter expression
@@ -74,7 +76,7 @@ Applying pure lit rule
 SAT
 \end{lstlisting}
 
-\begin{lstlisting}[frame=single, caption=pure literal rule test]
+\begin{lstlisting}[caption=pure literal rule test]
 $ ./part_1_binary
 Hello, World!
 Enter expression
@@ -113,7 +115,7 @@ Applying pure lit rule
 SAT
 \end{lstlisting}
 
-\begin{lstlisting}[frame=single, caption=DPLL recursion test]
+\begin{lstlisting}[caption=DPLL recursion test]
 $ ./part_1_binary
 Hello, World!
 Enter expression
@@ -206,7 +208,34 @@ The nodes which were merged are removed from the vector. The new node is then ad
 goes on until the vector consists of one element i.e. the root node.
 
 \subsection{Testing}
+For testing, some outputs where tested manually by hand. Online generators where also used to compare the output. Included are
+a sample output of the program and the tree obtained by an online generator. The output match but the values are flipped.
 
+
+\begin{figure}
+    \centering
+    \includegraphics[width=1\textwidth]{huffman_1}
+    \caption{Website used: http://huffman.ooz.ie/}
+\end{figure}
+
+\begin{lstlisting}[caption=Program output]
+$ ./part_2_binary input
+Hello, World!
+Building tree:
+Compressing: bbbbbbbbbbbbccceeeeeeeeeeeeeeeeeeeeeee
+eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeiiiiiiiiiiiiiiiii
+iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiooooooooooooooooo
+oooooooooooooooopppppppppppppppppppp
+COLLECTED DATA:
+b 12 c 3 e 57 i 51 o 33 p 20
+Printing tree:
+11 o
+1011 c
+1010 b
+100 p
+01 i
+00 e
+\end{lstlisting}
 
 
 \end{document}
