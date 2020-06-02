@@ -16,7 +16,6 @@ bool DPLL(formula_t formula) {
 
     if ( contains_empty_clause(formula) )           { return false; } 
 
-
     std::cout << "Applying one lit rule\n";
     exhaust:
     for(int i = 0; i < formula.size(); ++i) {
@@ -33,6 +32,12 @@ bool DPLL(formula_t formula) {
     show_formula(formula);
 
 
+    if ( formula.size() == 0 )                      { return true; }
+
+    if ( contains_empty_clause(formula) )           { return false; } 
+     
+
+    
     // DPLL
     literal_e l = choose_literal(formula);
     literal_e nl = negate(l);
@@ -53,7 +58,7 @@ literal_e choose_literal(formula_t formula) {
         }
     }
 
-    return {};
+    return inv;
 }
 
 literal_e negate(literal_e literal) {
@@ -247,6 +252,7 @@ formula_t remove_clauses_containing(formula_t formula, literal_e literal) {
 
 formula_t apply_pure_lit_rule(formula_t formula) {
      
+    // Two arrays containing the variables and whther they are contained in the formula
     literal_e lits[8]      = {w,     x,     y,     z,     nw,    nx,    ny,    nz   };
     bool contains[8] = {false, false, false, false, false, false, false, false};
     
@@ -283,6 +289,7 @@ formula_t apply_pure_lit_rule(formula_t formula) {
         }
     }
 
+    // Checks if the variable is pure
     for(int i = 0; i < 4; ++i) {
         if (contains[i] && !contains[i+4])      { formula = remove_clauses_containing(formula, lits[i]); }
         else if (!contains[i] && contains[i+4]) { formula = remove_clauses_containing(formula, lits[i+4]); }
@@ -291,96 +298,3 @@ formula_t apply_pure_lit_rule(formula_t formula) {
     return formula;
 }
 
-/* 
-literal_t choose_literal(formula_t formula) {
-    for(int i = 0; i < formula.size(); ++i) {
-        for(int j = 0; j < formula[i].size(); ++j) {
-            return formula[i][j];
-        }
-    }
-
-    return {};
-}
-
-bool contains(literal_e literal, clause_t clause) {
-
-    for(int i = 0; i < clause.size(); ++i) {
-        if(literal.var == clause[i].var && literal.is_neg == clause[i].is_neg) { return true; }
-    }
-
-    return false;
-
-}
-
-bool is_pure(variable v, bool nval, formula_t formula) {
-    bool exists = false;
-    
-    for(int i = 0; i < formula.size(); ++i) {
-        for(int j = 0; j < formula[i].size(); ++j) {
-            if ( formula[i][j].var == v && formula[i][j].is_neg == nval ) { exists = true; }
-            else if ( formula[i][j].var == v && formula[i][j].is_neg != nval ) { return false; }
-        }
-    }
-
-    return exists;
-}
-
-formula_t apply_pure_lit_rule(formula_t formula) {
-    formula_t new_formula;
-
-    // Find pure literals
-    std::vector<literal_t> pure_literals;
-    literal_t literal;
-    
-    std::vector<variable> var_list = { w, x, y, z };
-
-    for(int i = 0; i < var_list.size(); ++i) {
-        std::cout << "VARIABLE: " << var_list[i] << " ";
-        
-        if ( is_pure(var_list[i], false, formula) ) { 
-            literal.var = var_list[i];
-            literal.is_neg = false;
-            pure_literals.push_back(literal);
-        }
-        else if ( is_pure(var_list[i], true, formula) ) {
-            literal.var = var_list[i];
-            literal.is_neg = true;
-            pure_literals.push_back(literal);
-        }
-    }
-          
-    std::cout << "\nPRINTING PURE LITERALS" << std::endl;
-    for(int i = 0; i < pure_literals.size(); ++i) {
-        show_literal(pure_literals[i]);
-    }
-    std::cout << std::endl;
-
-    // Remove any clause with pure literals
-
-    for(int i = 0; i < formula.size(); ++i) {
-        for(int j = 0; j < pure_literals.size(); ++j) {
-            if ( contains(pure_literals[j], formula[i]) ) {}
-            else { new_formula.push_back(formula[i]); }
-        }
-    }
-
-    return new_formula;
-}
-
-
-
-
-bool is_consistent_set_of_literals(formula_t form) {
-    return true;
-}
-
-bool contains_empty_clause(formula_t formula) {
-    for(int i = 0; i < formula.size(); ++i) {
-        if ( formula[i].size() == 0 ) {
-            return true;
-        }
-    }
-
-    return false;
-}
-*/
